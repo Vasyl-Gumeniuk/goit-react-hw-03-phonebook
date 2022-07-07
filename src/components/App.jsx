@@ -3,6 +3,7 @@ import { ContactForm } from './ContactForm/ContactForm';
 import ContactList from './ContactList/ContactList';
 import Filter from './Filter/Filter';
 import styles from './styles.module.css';
+const LOCALSTORAGE_KEY = 'contacts';
 
 export class App extends Component {
   state = {
@@ -14,6 +15,22 @@ export class App extends Component {
     ],
     filter: '',
   };
+
+  componentDidMount() {
+    const updatedState = localStorage.getItem(LOCALSTORAGE_KEY);
+    const updateStateParsed = JSON.parse(updatedState);
+    if (updateStateParsed) {
+      this.setState({ contacts: updateStateParsed });
+    }
+  }
+
+  componentDidUpdate(prevState) {
+    const currentContacts = this.state.contacts;
+    const prevContacts = prevState.contacts;
+    if (prevContacts !== currentContacts) {
+      localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(currentContacts));
+    }
+  }
 
   handleChange = evt => {
     const { name, value } = evt.currentTarget;
